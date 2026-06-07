@@ -1,0 +1,88 @@
+* { box-sizing: border-box; }
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #222;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+}
+
+header a { text-decoration: none; color: #4a6cf7; margin-left: 12px; }
+header h1 a { color: #222; font-size: 22px; margin: 0; }
+
+.btn {
+    display: inline-block;
+    background: #4a6cf7;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+}
+.btn-b { background: #f76c6c; }
+.btn:hover { opacity: 0.9; }
+
+.card {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+.card h3 { margin-top: 0; }
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.error { color: #f76c6c; font-size: 13px; }
+.flash-error {
+    background: #ffeaea;
+    color: #c0392b;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+/* 투표 결과 바 (양쪽 %) */
+.result-bar {
+    display: flex;
+    height: 44px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 12px 0;
+    font-weight: bold;
+    color: #fff;
+}
+.bar-a, .bar-b {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    white-space: nowrap;
+    transition: width 0.4s ease;
+    min-width: 40px;
+}
+.bar-a { background: #4a6cf7; }
+.bar-b { background: #f76c6c; justify-content: flex-end; }
+
+.vote-options { display: flex; gap: 12px; margin: 12px 0; }
+.vote-options form { flex: 1; }
+.vote-options .btn { width: 100%; padding: 16px; font-size: 16px; }
+
+.mine { outline: 3px solid #ffd23f; outline-offset: -3px; }
+.muted { color: #888; font-size: 13px; }

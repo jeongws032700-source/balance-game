@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>밸런스 게임</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <h1><a th:href="@{/questions}">⚖️ 밸런스 게임</a></h1>
+    <div>
+        <span sec:authorize="isAuthenticated()" class="muted">
+            <span sec:authentication="name"></span>님
+        </span>
+        <a sec:authorize="isAuthenticated()" th:href="@{/questions/new}">질문 등록</a>
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline">
+            <button type="submit" class="btn" style="padding:6px 12px">로그아웃</button>
+        </form>
+        <a sec:authorize="!isAuthenticated()" th:href="@{/login}">로그인</a>
+        <a sec:authorize="!isAuthenticated()" th:href="@{/signup}">회원가입</a>
+    </div>
+</header>
+
+<p th:if="${#lists.isEmpty(questions)}" class="muted">아직 등록된 질문이 없습니다.</p>
+
+<div th:each="q : ${questions}" class="card">
+    <h3><a th:href="@{/questions/{id}(id=${q.id})}" th:text="${q.title}">제목</a></h3>
+
+    <div class="result-bar">
+        <div class="bar-a" th:style="'width:' + ${q.percentA} + '%'">
+            <span th:text="${q.optionA} + ' ' + ${q.percentA} + '%'">A</span>
+        </div>
+        <div class="bar-b" th:style="'width:' + ${q.percentB} + '%'">
+            <span th:text="${q.optionB} + ' ' + ${q.percentB} + '%'">B</span>
+        </div>
+    </div>
+    <p class="muted" th:text="'총 ' + ${q.total} + '표'">총 0표</p>
+</div>
+</body>
+</html>

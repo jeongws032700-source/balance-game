@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>질문 등록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <h1><a th:href="@{/questions}">⚖️ 밸런스 게임</a></h1>
+</header>
+
+<h2>질문 등록</h2>
+
+<form th:action="@{/questions}" th:object="${questionForm}" method="post">
+    <label>질문 제목</label>
+    <input type="text" th:field="*{title}" placeholder="예: 평생 한 가지만 먹는다면?">
+    <p class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+
+    <label>선택지 A</label>
+    <input type="text" th:field="*{optionA}" placeholder="예: 치킨">
+    <p class="error" th:if="${#fields.hasErrors('optionA')}" th:errors="*{optionA}"></p>
+
+    <label>선택지 B</label>
+    <input type="text" th:field="*{optionB}" placeholder="예: 피자">
+    <p class="error" th:if="${#fields.hasErrors('optionB')}" th:errors="*{optionB}"></p>
+
+    <button type="submit" class="btn">등록</button>
+    <a th:href="@{/questions}" class="muted" style="margin-left:8px">취소</a>
+</form>
+</body>
+</html>

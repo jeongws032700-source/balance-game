@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${result.title}">질문</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <h1><a th:href="@{/questions}">⚖️ 밸런스 게임</a></h1>
+    <a th:href="@{/questions}">목록</a>
+</header>
+
+<h2 th:text="${result.title}">제목</h2>
+
+<p th:if="${error}" class="flash-error" th:text="${error}">에러</p>
+
+<!-- 비로그인 또는 미투표 상태: 투표 버튼 -->
+<div th:if="${loggedIn and !result.voted}" class="vote-options">
+    <form th:action="@{/questions/{id}/vote(id=${result.id})}" method="post">
+        <input type="hidden" name="choice" value="A">
+        <button type="submit" class="btn" th:text="${result.optionA}">A</button>
+    </form>
+    <form th:action="@{/questions/{id}/vote(id=${result.id})}" method="post">
+        <input type="hidden" name="choice" value="B">
+        <button type="submit" class="btn btn-b" th:text="${result.optionB}">B</button>
+    </form>
+</div>
+
+<p th:if="${!loggedIn}" class="muted">
+    <a th:href="@{/login}">로그인</a> 후 투표할 수 있습니다. (결과는 아래에서 확인)
+</p>
+
+<!-- 결과 바 (양쪽 %) -->
+<div class="result-bar">
+    <div class="bar-a" th:classappend="${result.myChoice == 'A'} ? 'mine'"
+         th:style="'width:' + ${result.percentA} + '%'">
+        <span th:text="${result.optionA} + ' ' + ${result.percentA} + '%'">A</span>
+    </div>
+    <div class="bar-b" th:classappend="${result.myChoice == 'B'} ? 'mine'"
+         th:style="'width:' + ${result.percentB} + '%'">
+        <span th:text="${result.optionB} + ' ' + ${result.percentB} + '%'">B</span>
+    </div>
+</div>
+
+<p class="muted">
+    <span th:text="'총 ' + ${result.total} + '표'">총 0표</span>
+    <span th:if="${result.voted}" th:text="' · 내 선택: ' + (${result.myChoice == 'A'} ? ${result.optionA} : ${result.optionB})"></span>
+</p>
+</body>
+</html>
