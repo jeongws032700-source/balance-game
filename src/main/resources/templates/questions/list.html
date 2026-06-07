@@ -1,41 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>밸런스 게임</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>밸런스 게임 · 질문 목록</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@1.3.9/dist/web/static/pretendard.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<header>
-    <h1><a th:href="@{/questions}">⚖️ 밸런스 게임</a></h1>
-    <div>
-        <span sec:authorize="isAuthenticated()" class="muted">
-            <span sec:authentication="name"></span>님
-        </span>
-        <a sec:authorize="isAuthenticated()" th:href="@{/questions/new}">질문 등록</a>
-        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline">
-            <button type="submit" class="btn" style="padding:6px 12px">로그아웃</button>
-        </form>
-        <a sec:authorize="!isAuthenticated()" th:href="@{/login}">로그인</a>
-        <a sec:authorize="!isAuthenticated()" th:href="@{/signup}">회원가입</a>
-    </div>
-</header>
+<nav th:replace="~{fragments/nav :: topnav}"></nav>
 
-<p th:if="${#lists.isEmpty(questions)}" class="muted">아직 등록된 질문이 없습니다.</p>
-
-<div th:each="q : ${questions}" class="card">
-    <h3><a th:href="@{/questions/{id}(id=${q.id})}" th:text="${q.title}">제목</a></h3>
-
-    <div class="result-bar">
-        <div class="bar-a" th:style="'width:' + ${q.percentA} + '%'">
-            <span th:text="${q.optionA} + ' ' + ${q.percentA} + '%'">A</span>
+<div class="container">
+    <!-- 히어로 -->
+    <section class="hero">
+        <div class="hero-row">
+            <div>
+                <h1>모든 밸런스 게임</h1>
+                <p class="hero-sub">
+                    지금 사람들이 가장 고민 중인 양자택일
+                    <span th:text="${#lists.size(questions)}">0</span>개
+                </p>
+            </div>
+            <a class="btn-ghost" th:href="@{/questions/new}">+ 질문 만들기</a>
         </div>
-        <div class="bar-b" th:style="'width:' + ${q.percentB} + '%'">
-            <span th:text="${q.optionB} + ' ' + ${q.percentB} + '%'">B</span>
-        </div>
-    </div>
-    <p class="muted" th:text="'총 ' + ${q.total} + '표'">총 0표</p>
+    </section>
+
+    <!-- 그리드 -->
+    <section class="grid">
+        <p th:if="${#lists.isEmpty(questions)}" class="empty">아직 등록된 질문이 없어요. 첫 질문을 만들어보세요!</p>
+
+        <a th:each="q : ${questions}" class="qcard" th:href="@{/questions/{id}(id=${q.id})}">
+            <h3 class="qcard-q" th:text="${q.title}">질문</h3>
+
+            <div class="splitbar">
+                <div class="splitbar-a" th:style="'width:' + ${q.percentA} + '%'"></div>
+                <div class="splitbar-b" th:style="'width:' + ${q.percentB} + '%'"></div>
+            </div>
+
+            <div class="opts">
+                <div class="opt opt--a" th:classappend="${q.myChoice == 'A'} ? 'opt--mine'">
+                    <span class="opt-top">
+                        <span class="opt-label" th:text="${q.optionA}">A</span>
+                        <span class="opt-check" th:if="${q.myChoice == 'A'}">✓</span>
+                    </span>
+                    <span class="opt-pct"><span th:text="${q.percentA}">0</span><small>%</small></span>
+                </div>
+                <div class="opt opt--b" th:classappend="${q.myChoice == 'B'} ? 'opt--mine'">
+                    <span class="opt-top">
+                        <span class="opt-label" th:text="${q.optionB}">B</span>
+                        <span class="opt-check" th:if="${q.myChoice == 'B'}">✓</span>
+                    </span>
+                    <span class="opt-pct"><span th:text="${q.percentB}">0</span><small>%</small></span>
+                </div>
+            </div>
+
+            <div class="qcard-foot">
+                <span th:text="'👥 ' + ${q.total} + '명 참여'">👥 0명 참여</span>
+                <span class="foot-cta" th:text="${q.voted} ? '결과 보기 →' : '투표하기 →'">투표하기 →</span>
+            </div>
+        </a>
+    </section>
 </div>
 </body>
 </html>

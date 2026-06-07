@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="topnav" class="nav">
+  <div class="nav-inner">
+    <a class="brand" th:href="@{/questions}">
+      <span class="brand-logo">B</span>
+      <span class="brand-name">balance</span>
+    </a>
+    <div class="nav-actions">
+      <span sec:authorize="isAuthenticated()" class="nav-user">
+        <span sec:authentication="name">user</span>님
+      </span>
+      <a sec:authorize="isAuthenticated()" class="btn-ghost" th:href="@{/questions/new}">+ 질문 만들기</a>
+      <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline">
+        <button type="submit" class="btn-ghost">로그아웃</button>
+      </form>
+      <a sec:authorize="!isAuthenticated()" class="nav-link" th:href="@{/login}">로그인</a>
+      <a sec:authorize="!isAuthenticated()" class="btn-primary" th:href="@{/signup}">회원가입</a>
+    </div>
+  </div>
+</nav>
+</body>
+</html>
