@@ -36,5 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
-### 로컬 실행 로그 ###
+### 로컬 실행 로그 / 빌드 산출물 ###
 bootrun.log
+server.log
+*-args.txt
+balance-src.tgz

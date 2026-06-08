@@ -19,31 +19,31 @@
         <div class="qcard qcard--detail">
             <h1 class="detail-q" th:text="${result.title}">질문</h1>
 
-            <div class="splitbar">
+            <!-- 결과 바: 투표 후에만 공개 -->
+            <div class="splitbar" th:if="${result.voted}">
                 <div class="splitbar-a" th:style="'width:' + ${result.percentA} + '%'"></div>
                 <div class="splitbar-b" th:style="'width:' + ${result.percentB} + '%'"></div>
             </div>
+            <div class="splitbar splitbar--blind" th:unless="${result.voted}"></div>
 
-            <!-- 로그인 + 미투표: 투표 버튼 -->
+            <!-- 로그인 + 미투표: 투표 버튼 (퍼센트 숨김) -->
             <div th:if="${loggedIn and !result.voted}" class="opts">
                 <form class="opt-form" method="post" th:action="@{/questions/{id}/vote(id=${result.id})}">
                     <input type="hidden" name="choice" value="A">
                     <button type="submit" class="opt opt--a">
                         <span class="opt-label" th:text="${result.optionA}">A</span>
-                        <span class="opt-pct"><span th:text="${result.percentA}">0</span><small>%</small></span>
                     </button>
                 </form>
                 <form class="opt-form" method="post" th:action="@{/questions/{id}/vote(id=${result.id})}">
                     <input type="hidden" name="choice" value="B">
                     <button type="submit" class="opt opt--b">
                         <span class="opt-label" th:text="${result.optionB}">B</span>
-                        <span class="opt-pct"><span th:text="${result.percentB}">0</span><small>%</small></span>
                     </button>
                 </form>
             </div>
 
-            <!-- 비로그인 or 이미 투표: 결과 표시 -->
-            <div th:unless="${loggedIn and !result.voted}" class="opts">
+            <!-- 투표 완료: 결과 공개 -->
+            <div th:if="${result.voted}" class="opts">
                 <div class="opt opt--a" th:classappend="${result.myChoice == 'A'} ? 'opt--mine'">
                     <span class="opt-top">
                         <span class="opt-label" th:text="${result.optionA}">A</span>
@@ -60,15 +60,28 @@
                 </div>
             </div>
 
+            <!-- 비로그인 + 미투표: 블라인드 (선택지만, 퍼센트 숨김) -->
+            <div th:if="${!loggedIn and !result.voted}" class="opts">
+                <div class="opt opt--a">
+                    <span class="opt-top"><span class="opt-label" th:text="${result.optionA}">A</span></span>
+                    <span class="opt-pct opt-pct--blind">?</span>
+                </div>
+                <div class="opt opt--b">
+                    <span class="opt-top"><span class="opt-label" th:text="${result.optionB}">B</span></span>
+                    <span class="opt-pct opt-pct--blind">?</span>
+                </div>
+            </div>
+
             <div class="qcard-foot">
-                <span th:text="'👥 ' + ${result.total} + '명 참여'">👥 0명 참여</span>
+                <span th:if="${result.voted}" th:text="'👥 ' + ${result.total} + '명 참여'">👥 0명 참여</span>
+                <span th:unless="${result.voted}">🔒 투표하면 결과가 공개돼요</span>
                 <span th:if="${result.voted}"
                       th:text="'내 선택: ' + (${result.myChoice == 'A'} ? ${result.optionA} : ${result.optionB})">내 선택</span>
             </div>
         </div>
 
         <p th:if="${!loggedIn}" class="hint" style="margin-top:18px">
-            <a th:href="@{/login}">로그인</a> 후 투표할 수 있어요
+            <a th:href="@{/login}">로그인</a> 후 투표하면 결과를 볼 수 있어요
         </p>
     </div>
 </div>

@@ -25,17 +25,34 @@
         </div>
     </section>
 
+    <!-- 검색 / 정렬 -->
+    <section class="toolbar">
+        <form class="search" method="get" th:action="@{/questions}">
+            <input type="text" name="q" th:value="${q}" placeholder="질문 검색…" class="search-input">
+            <input type="hidden" name="sort" th:value="${sort}">
+            <button type="submit" class="btn-ghost">검색</button>
+        </form>
+        <div class="sortlinks">
+            <a th:href="@{/questions(sort='recent', q=${q})}"
+               th:classappend="${sort == 'popular'} ? '' : 'is-active'">최신순</a>
+            <a th:href="@{/questions(sort='popular', q=${q})}"
+               th:classappend="${sort == 'popular'} ? 'is-active'">인기순</a>
+        </div>
+    </section>
+
     <!-- 그리드 -->
     <section class="grid">
-        <p th:if="${#lists.isEmpty(questions)}" class="empty">아직 등록된 질문이 없어요. 첫 질문을 만들어보세요!</p>
+        <p th:if="${#lists.isEmpty(questions)}" class="empty">조건에 맞는 질문이 없어요. 첫 질문을 만들어보세요!</p>
 
         <a th:each="q : ${questions}" class="qcard" th:href="@{/questions/{id}(id=${q.id})}">
             <h3 class="qcard-q" th:text="${q.title}">질문</h3>
 
-            <div class="splitbar">
+            <!-- 결과 바: 투표 후에만 공개 -->
+            <div class="splitbar" th:if="${q.voted}">
                 <div class="splitbar-a" th:style="'width:' + ${q.percentA} + '%'"></div>
                 <div class="splitbar-b" th:style="'width:' + ${q.percentB} + '%'"></div>
             </div>
+            <div class="splitbar splitbar--blind" th:unless="${q.voted}"></div>
 
             <div class="opts">
                 <div class="opt opt--a" th:classappend="${q.myChoice == 'A'} ? 'opt--mine'">
@@ -43,19 +60,22 @@
                         <span class="opt-label" th:text="${q.optionA}">A</span>
                         <span class="opt-check" th:if="${q.myChoice == 'A'}">✓</span>
                     </span>
-                    <span class="opt-pct"><span th:text="${q.percentA}">0</span><small>%</small></span>
+                    <span class="opt-pct" th:if="${q.voted}"><span th:text="${q.percentA}">0</span><small>%</small></span>
+                    <span class="opt-pct opt-pct--blind" th:unless="${q.voted}">?</span>
                 </div>
                 <div class="opt opt--b" th:classappend="${q.myChoice == 'B'} ? 'opt--mine'">
                     <span class="opt-top">
                         <span class="opt-label" th:text="${q.optionB}">B</span>
                         <span class="opt-check" th:if="${q.myChoice == 'B'}">✓</span>
                     </span>
-                    <span class="opt-pct"><span th:text="${q.percentB}">0</span><small>%</small></span>
+                    <span class="opt-pct" th:if="${q.voted}"><span th:text="${q.percentB}">0</span><small>%</small></span>
+                    <span class="opt-pct opt-pct--blind" th:unless="${q.voted}">?</span>
                 </div>
             </div>
 
             <div class="qcard-foot">
-                <span th:text="'👥 ' + ${q.total} + '명 참여'">👥 0명 참여</span>
+                <span th:if="${q.voted}" th:text="'👥 ' + ${q.total} + '명 참여'">👥 0명 참여</span>
+                <span th:unless="${q.voted}">🔒 투표하면 결과 공개</span>
                 <span class="foot-cta" th:text="${q.voted} ? '결과 보기 →' : '투표하기 →'">투표하기 →</span>
             </div>
         </a>

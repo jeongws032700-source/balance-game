@@ -1,0 +1,33 @@
+[Unit]
+Description=Balance Game (Spring Boot)
+Documentation=https://github.com/jeongws032700-source/balance-game
+# 네트워크와 DB가 준비된 뒤 기동
+After=network-online.target mariadb.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=balance
+Group=balance
+WorkingDirectory=/opt/balance-game
+
+# DB 접속정보 등 환경변수 (비밀은 여기 파일에만, 유닛 파일에는 두지 않음)
+EnvironmentFile=/etc/balance-game/balance-game.env
+
+# 작은 VM(1~2GB) 기준 힙 제한. 메모리 여유가 있으면 -Xmx 조정/삭제
+ExecStart=/usr/bin/java -Xmx512m -jar /opt/balance-game/balance-game.jar
+
+# 죽으면 5초 뒤 자동 재시작 (크래시·OOM 모두 커버)
+Restart=always
+RestartSec=5
+
+# Spring Boot는 SIGTERM 종료 시 exit code 143 → 정상 종료로 취급
+SuccessExitStatus=143
+
+# 로그는 journald 로 (journalctl -u balance-game)
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=balance-game
+
+[Install]
+WantedBy=multi-user.target

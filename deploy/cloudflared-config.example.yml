@@ -1,0 +1,12 @@
+# /etc/cloudflared/config.yml 로 복사 후 UUID·도메인을 채우세요.
+# UUID 와 자격증명 json 은 `cloudflared tunnel create balance-game` 실행 시 생성됩니다.
+
+tunnel: <TUNNEL-UUID>
+credentials-file: /etc/cloudflared/<TUNNEL-UUID>.json
+
+ingress:
+  # 본인 Cloudflare 도메인으로 교체
+  - hostname: balance.example.com
+    service: http://localhost:8080
+  # 그 외 요청은 404 (필수: ingress 의 마지막 catch-all)
+  - service: http_status:404

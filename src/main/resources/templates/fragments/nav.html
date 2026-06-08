@@ -12,6 +12,7 @@
       <span sec:authorize="isAuthenticated()" class="nav-user">
         <span sec:authentication="name">user</span>님
       </span>
+      <a sec:authorize="isAuthenticated()" class="nav-link" th:href="@{/mypage}">마이페이지</a>
       <a sec:authorize="isAuthenticated()" class="btn-ghost" th:href="@{/questions/new}">+ 질문 만들기</a>
       <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline">
         <button type="submit" class="btn-ghost">로그아웃</button>
